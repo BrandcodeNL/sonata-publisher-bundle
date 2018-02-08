@@ -1,0 +1,8 @@
+services:
+  brandcode_nl_sonata_publisher.channel_provider:
+    class: BrandcodeNL\SonataPublisherBundle\Channel\ChannelProvider
+
+  brandcode_nl_sonata_publisher.crud_controller:
+    class: BrandcodeNL\SonataPublisherBundle\Controller\CRUDController
+    arguments: ['@brandcode_nl_sonata_publisher.channel_provider']
+    calls: [['setContainer', ['@service_container']]]
