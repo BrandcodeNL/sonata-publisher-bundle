@@ -6,3 +6,10 @@ services:
     class: BrandcodeNL\SonataPublisherBundle\Controller\CRUDController
     arguments: ['@brandcode_nl_sonata_publisher.channel_provider']
     calls: [['setContainer', ['@service_container']]]
+  
+  brandcode_nl_sonata_publisher.twig_published_filter:
+    class: BrandcodeNL\SonataPublisherBundle\Twig\PublishedExtension
+    public: false
+    arguments: ['@doctrine.orm.entity_manager']    
+    tags:
+        - { name: twig.extension }
