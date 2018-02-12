@@ -1,0 +1,43 @@
+{
+    "name": "brandcodenl/sonata-publisher-bundle",
+    "type": "symfony-bundle",
+    "description": "Publish entities from sonata admin list view to available channels",
+    "keywords": ["sonata", "publish", "social"],
+    "homepage": "https://aveq.nl",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeroen de Kok",
+            "email": "jeroen.dekok@aveq.nl",
+            "homepage": "https://aveq.nl"
+        }      
+    ],
+    "require": {      
+        "sonata-project/admin-bundle": "^3.1"   
+    },
+    "require-dev": {
+      
+    },
+    "suggest": {
+        "brandcodenl/sonata-mailchimp-publisher-bundle": "For publishing to Mailchimp."        
+    },
+    "conflict": {
+     
+    },
+    "autoload": {
+        "psr-4": {
+            "BrandcodeNL\\SonataPublisherBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    }
+}
