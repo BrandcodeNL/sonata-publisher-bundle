@@ -1,5 +1,8 @@
 <?php
-
+/*
+ * This file is part of the BrandcodeNL SonataPublisherBundle.
+ * (c) BrandcodeNL
+ */
 namespace BrandcodeNL\SonataPublisherBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -8,6 +11,9 @@ use BrandcodeNL\SonataPublisherBundle\Entity\PublishResponce;
 use BrandcodeNL\SonataPublisherBundle\Channel\ChannelProvider;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
 
+/**
+ * @author Jeroen de Kok <jeroen.dekok@aveq.nl>
+ */
 class CRUDController extends Controller
 {
     private $channelProvider;

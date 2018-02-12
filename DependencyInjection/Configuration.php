@@ -1,5 +1,8 @@
 <?php
-
+/*
+ * This file is part of the BrandcodeNL SonataPublisherBundle.
+ * (c) BrandcodeNL
+ */
 namespace BrandcodeNL\SonataPublisherBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

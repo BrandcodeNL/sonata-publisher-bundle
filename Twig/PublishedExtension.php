@@ -1,4 +1,8 @@
 <?php
+/*
+ * This file is part of the BrandcodeNL SonataPublisherBundle.
+ * (c) BrandcodeNL
+ */
 
 namespace BrandcodeNL\SonataPublisherBundle\Twig;
 
@@ -8,6 +12,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use BrandcodeNL\SonataPublisherBundle\Entity\PublishResponce;
 
+/**
+ * @author Jeroen de Kok <jeroen.dekok@aveq.nl>
+ */
 class PublishedExtension extends AbstractExtension
 {
     private $em;

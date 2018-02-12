@@ -1,5 +1,10 @@
 <?php
 // src/AppBundle/DependencyInjection/Compiler/MailTransportPass.php
+
+/*
+ * This file is part of the BrandcodeNL SonataPublisherBundle.
+ * (c) BrandcodeNL
+ */
 namespace BrandcodeNL\SonataPublisherBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -7,6 +12,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 use BrandcodeNL\SonataPublisherBundle\Channel\ChannelProvider;
 
+/**
+ * @author Jeroen de Kok <jeroen.dekok@aveq.nl>
+ */
 class ChannelPass implements CompilerPassInterface
 {
 
