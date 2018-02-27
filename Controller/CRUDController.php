@@ -27,6 +27,7 @@ class CRUDController extends Controller
      */
     public function publishAction($id)
     {
+        
         $object = $this->admin->getSubject();
         
         if (!$object) {
@@ -61,7 +62,7 @@ class CRUDController extends Controller
         {
             $locales = $request->get('locale');
             if($request->get('channel')[$key] == "true")
-            {
+            { 
                 //publish this object in this channel for each locale
                 foreach($locales as $locale => $value)
                 {

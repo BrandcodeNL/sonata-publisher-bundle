@@ -1,3 +1,0 @@
-brandcode_nl_sonata_publisher_homepage:
-    path:     /
-    defaults: { _controller: BrandcodeNLSonataPublisherBundle:Default:index }
