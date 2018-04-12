@@ -5,7 +5,7 @@
     {{'publish' | trans }} &nbsp;
     {% set count = object | isPublished %}
     {% if count > 0 %}
-        <small class="label pull-right bg-green">{{count}}</small>
+        <i class="fa fa-check success" style="color:green"></i>
     {%else%}
     <small class="label pull-right">&nbsp;</small>
     {% endif %}
