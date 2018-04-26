@@ -61,35 +61,38 @@ class CRUDController extends Controller
         foreach($this->channelProvider->getChannels() as $key =>  $channel)
         {
             $locales = $request->get('locale');
-            if($request->get('channel')[$key] == "true")
-            { 
-                //publish this object in this channel for each locale
-                foreach($locales as $locale => $value)
-                {
-                    //make sure the object is in the correct language                  
-                    $object = $this->translateObject($object, $locale);                   
-                    $result = $channel->publish($object);     
-                    if($result instanceof PublishResponce)
+            if(is_array($locales) && count($locales) > 0)
+            {            
+                if($request->get('channel')[$key] == "true")
+                { 
+                    //publish this object in this channel for each locale
+                    foreach($locales as $locale => $value)
                     {
-                        $result->setObjectId($id);
+                        //make sure the object is in the correct language                  
+                        $object = $this->translateObject($object, $locale);                   
+                        $result = $channel->publish($object);     
+                        if($result instanceof PublishResponce)
+                        {
+                            $result->setObjectId($id);
+                        
+                            $this->addFlash(
+                                $result->getStatus(),
+                                $this->trans('sonata_publish.'.$result->getStatus(),array(
+                                        '%locale%' => $locale, 
+                                        '%object%' => strval($object), 
+                                        '%count%' => $result->getCount(), 
+                                        '%message%' => json_encode($result->getResultData()), 
+                                        '%channel%' => $this->trans($result->getChannel(), array(), 'messages')
+                                ),
+                                'BrandcodeNLSonataPublisherBundle'
+                                )
+                            );                  
                     
-                        $this->addFlash(
-                            $result->getStatus(),
-                            $this->trans('sonata_publish.success',array(
-                                    '%locale%' => $locale, 
-                                    '%object%' => strval($object), 
-                                    '%count%' => $result->getCount(), 
-                                    '%channel%' => $this->trans($result->getChannel(), array(), 'messages')
-                            ),
-                            'BrandcodeNLSonataPublisherBundle'
-                            )
-                        );                  
-                
-                        $this->get('doctrine')->getEntityManager()->persist($result);                  
-                    } 
-                }
+                            $this->get('doctrine')->getEntityManager()->persist($result);                  
+                        } 
+                    }
 
-                
+                }
             }
     
         }
