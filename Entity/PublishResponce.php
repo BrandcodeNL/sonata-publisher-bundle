@@ -46,12 +46,29 @@ class PublishResponce
      */
     private $objectId;
 
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $locale;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $user;
+    
+
     public function __construct($status, $count, $resultData, $channel)
     {   
         $this->status = $status;
         $this->count = $count;
         $this->resultData = $resultData;
         $this->channel = $channel;
+        $this->createdAt = new \DateTime();
     }
     
     public function getId(){
@@ -108,5 +125,28 @@ class PublishResponce
         $this->objectId = $objectId;
         return $this;
     }
+
+    public function getLocale(){
+        return $this->locale;
+    }
+
+    public function setLocale($locale){
+        $this->locale = $locale;
+        return $this;
+    }
+
+    public function getUser(){
+        return $this->user;
+    }
+
+    public function setUser($user){
+        $this->user  = $user;
+        return $this;
+    }
+
+    public function getCreatedAt(){
+        return $this->createdAt;
+    }
+
 
 }

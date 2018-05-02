@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use BrandcodeNL\SonataPublisherBundle\Entity\PublishResponce;
 use BrandcodeNL\SonataPublisherBundle\Channel\ChannelProvider;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @author Jeroen de Kok <jeroen.dekok@aveq.nl>
@@ -17,10 +18,12 @@ use Sonata\AdminBundle\Controller\CRUDController as Controller;
 class CRUDController extends Controller
 {
     private $channelProvider;
+    private $tokenStorage;
 
-    public function __construct(ChannelProvider $channelProvider)
+    public function __construct(ChannelProvider $channelProvider, TokenStorageInterface $tokenStorage)
     {
         $this->channelProvider = $channelProvider;
+        $this->tokenStorage = $tokenStorage;
     }
     /**
      * Find available publishing channels and let the user choose
@@ -33,13 +36,17 @@ class CRUDController extends Controller
         if (!$object) {
             throw new NotFoundHttpException(sprintf('unable to find the object with id: %s', $id));
         }
-        
+        $history = $this->get('doctrine')->getEntityManager()->getRepository(PublishResponce::class)->findBy(
+            array('objectId' => $id),
+            array('id' => 'DESC')
+        );
         return $this->renderWithExtraParams(
             'BrandcodeNLSonataPublisherBundle:CRUD:channel_picker.html.twig',        
             array(                
                 'action' => 'publish',
                 'object' => $object,
-                'channels' => $this->channelProvider->getChannels()
+                'channels' => $this->channelProvider->getChannels(),
+                'history' => $history
             )    
         );
        
@@ -72,7 +79,9 @@ class CRUDController extends Controller
                     if($result instanceof PublishResponce)
                     {
                         $result->setObjectId($id);
-                    
+                        $result->setLocale($locale);
+                        $result->setUser( (string) $this->tokenStorage->getToken()->getUser());
+                       
                         $this->addFlash(
                             $result->getStatus(),
                             $this->trans('sonata_publish.success',array(

@@ -9,45 +9,87 @@
 
 {% block content %}
     <div class="sonata-ba-delete">
-        <div class="box box-danger">
-            <form action="{{ admin.generateUrl('publishConfirmed', {'id': object.id}) }}" method="POST">
-                <div class="box-header">   
-                    <h4 class="box-title">{{'admin.channels.picker.title'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</h4>
-                </div>
-                
-                <div class="box-body">                               
-                    <p>{{'admin.channels.picker.lang.info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</p>        
-                    {% if admin.class is translatable %}
-                        
-                            {% for locale in sonata_translation_locales %}   
-                                <div class="form-checkbox-container">                         
-                                    <input type="checkbox" id="locale_{{locale}}" name="locale[{{locale}}]" value="true">            
-                                    <label for="channel_{{locale}}">{{locale | trans}}</label>      
-                                </div>
-                            {% endfor %}
-                 
-                    {% endif %}
-                    <p>{{'admin.channels.picker.info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</p>                    
-                    {% for channel in channels %}       
-                        <div class="form-checkbox-container">                           
-                            <input type="checkbox" id="channel_{{loop.index0}}" name="channel[{{loop.index0}}]" value="true">            
-                            <label for="channel_{{loop.index0}}">{{channel | trans}}</label>   
-                        </div>
-                    {% endfor %}
-                </div>
-                
-                <div class="box-footer clearfix">                     
-                        <button type="submit" class="btn btn-danger">{{ 'btn_execute_publish_action'|trans({}, 'BrandcodeNLSonataPublisherBundle') }}</button>
-                        {% if admin.hasRoute('list') and admin.hasAccess('list') %}
-                            {{ 'delete_or'|trans({}, 'SonataAdminBundle') }}
-
-                            <a class="btn btn-success" href="{{ admin.generateUrl('list') }}">
-                                <i class="fa fa-th-list" aria-hidden="true"></i> {{ 'link_action_list'|trans({}, 'BrandcodeNLSonataPublisherBundle') }}
-                            </a>
+        <div class="col-md-8">
+            <div class="box box-danger ">
+                <form action="{{ admin.generateUrl('publishConfirmed', {'id': object.id}) }}" method="POST">
+                    <div class="box-header">   
+                        <h4 class="box-title">{{'admin.channels.picker.title'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</h4>
+                    </div>
+                    
+                    <div class="box-body">                               
+                        <p>{{'admin.channels.picker.lang.info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</p>        
+                        {% if admin.class is translatable %}
+                            
+                                {% for locale in sonata_translation_locales %}   
+                                    <div class="form-checkbox-container">                         
+                                        <input type="checkbox" id="locale_{{locale}}" name="locale[{{locale}}]" value="true">            
+                                        <label for="channel_{{locale}}">{{locale | trans}}</label>      
+                                    </div>
+                                {% endfor %}
+                    
                         {% endif %}
-                   
+                        <p>{{'admin.channels.picker.info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</p>                    
+                        {% for channel in channels %}       
+                            <div class="form-checkbox-container">                           
+                                <input type="checkbox" id="channel_{{loop.index0}}" name="channel[{{loop.index0}}]" value="true">            
+                                <label for="channel_{{loop.index0}}">{{channel | trans}}</label>   
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="box-footer clearfix">                     
+                            <button type="submit" class="btn btn-danger">{{ 'btn_execute_publish_action'|trans({}, 'BrandcodeNLSonataPublisherBundle') }}</button>
+                            {% if admin.hasRoute('list') and admin.hasAccess('list') %}
+                                {{ 'delete_or'|trans({}, 'SonataAdminBundle') }}
+
+                                <a class="btn btn-success" href="{{ admin.generateUrl('list') }}">
+                                    <i class="fa fa-th-list" aria-hidden="true"></i> {{ 'link_action_list'|trans({}, 'BrandcodeNLSonataPublisherBundle') }}
+                                </a>
+                            {% endif %}
+                    
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-4 ">
+            <div class="box">
+                <div class="box-header">   
+                    <h4 class="box-title">{{'admin.channels.history.title'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</h4>
                 </div>
-            </form>
+                <div class="qa-message-list" id="wallmessages">
+                {% for item in history %}       
+                
+                    <div class="message-item" id="m16">
+                        <div class="message-inner">
+                            <div class="message-head clearfix">                               
+                                <div class="user-detail">
+                                    <div class="avatar pull-left"><img src="/assets/dist/bundles/sonatatranslation/img/flags/{{item.locale}}.png"></a></div>
+                                    <h5 class="handle">{{item.user}}</h5>
+                                    <div class="post-meta">
+                                        <div class="asker-meta">
+                                            <span class="qa-message-what"></span>
+                                            <span class="qa-message-when">
+                                                <span class="qa-message-when-data">{{item.createdAt | date('d-m-Y H:i:s')}}</span>
+                                            </span>
+                                            <span class="qa-message-who">
+                                                <span class="qa-message-who-pad">by </span>
+                                                <span class="qa-message-who-data">{{item.user}}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="qa-message-content">
+                                   {{'admin.item.published' | trans({'%user%':  item.user, '%title%': object.title, '%channel%': item.channel|trans, '%date%': item.createdAt | date('d-m-Y H:i:s')}, 'BrandcodeNLSonataPublisherBundle') | raw}} 
+                            </div>
+                        </div>
+                    </div>
+                
+                {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
+ 
+
 {% endblock %}
