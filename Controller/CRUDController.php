@@ -6,6 +6,7 @@
 namespace BrandcodeNL\SonataPublisherBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use BrandcodeNL\SonataPublisherBundle\Entity\PublishResponce;
 use BrandcodeNL\SonataPublisherBundle\Channel\ChannelProvider;
@@ -52,17 +53,25 @@ class CRUDController extends Controller
        
     }
 
+    
     /**
      * Publish given object to registered 3th party channels
      * TODO use message queue / Sonata Notification bundle for processing ? 
      */
-    public function publishConfirmedAction($id, Request $request)
+    public function publishConfirmedAction(Request $request)
     {
-       
-        $object = $this->admin->getSubject();
+        $modelManager = $this->admin->getModelManager();
+        $targets = $modelManager->findBy(        
+            $this->admin->getClass(),        
+            array(
+            'id' => explode(",", $request->get('_text_targetId'))
+            )
+        );
+  
+      
         
-        if (!$object) {
-            throw new NotFoundHttpException(sprintf('unable to find the object with id: %s', $id));
+        if (!$targets) {
+            throw new NotFoundHttpException(sprintf('unable to find the objects',  $request->get('_text_targetId')));
         }
 
         foreach($this->channelProvider->getChannels() as $key =>  $channel)
@@ -109,6 +118,52 @@ class CRUDController extends Controller
         $this->get('doctrine')->getEntityManager()->flush();       
        
         return new RedirectResponse($this->admin->generateUrl('list'));
+    }
+
+
+    /**
+     * @param ProxyQueryInterface $selectedModelQuery
+     * @param Request             $request
+     *
+     * @return RedirectResponse
+     */
+    public function batchActionpublish(ProxyQueryInterface $selectedModelQuery, Request $request = null)
+    {
+        $modelManager = $this->admin->getModelManager();
+        $targets = implode(",",$request->get('idx'));
+        $targets = $modelManager->find($this->admin->getClass(), $targets);
+
+        if ($targets === null){
+            $this->addFlash('sonata_flash_info', 'flash_batch_merge_no_target');
+
+            return new RedirectResponse(
+                $this->admin->generateUrl('list', [
+                    'filter' => $this->admin->getFilterParameters()
+                ])
+            );
+        }
+
+        $selectedModels = $selectedModelQuery->execute();
+       
+        //batch prepare templates
+        $prepareTemplates = array();
+        foreach($this->channelProvider->getBatchChannels() as $key=> $channel){
+            $batchPrepare = $channel->batchPrepare($selectedModels);
+            $prepareTemplates[$key] = $this->get('twig')->render($batchPrepare['template'], $batchPrepare['parameters']);
+        }
+
+        return $this->renderWithExtraParams(
+            'BrandcodeNLSonataPublisherBundle:CRUD:batch_channel_picker.html.twig',        
+            array(                
+                'action' => 'publish',                
+                'targets' => $selectedModels,
+                'targetId' => implode(",", $request->get('idx')),
+                'channels' => $this->channelProvider->getBatchChannels(),
+                'batchTemplates' => $prepareTemplates,
+                'history' => null
+            )    
+        );
+       
     }
 
     private function translateObject($object, $locale)

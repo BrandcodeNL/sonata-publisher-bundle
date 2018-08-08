@@ -5,6 +5,8 @@
  */
 namespace BrandcodeNL\SonataPublisherBundle\Channel;
 
+use BrandcodeNL\SonataPublisherBundle\Channel\BatchChannelInterface;
+
 /**
  * @author Jeroen de Kok <jeroen.dekok@aveq.nl>
  */
@@ -35,4 +37,21 @@ class ChannelProvider
     {
         return $this->channels;
     }
+
+    /**
+     * Get all the channels that support batch actions
+     * @return Array $channels
+     */
+    public function getBatchChannels()
+    {
+        $batchChannels = array();
+        foreach($this->channels as $channel){
+            if ($channel instanceof BatchChannelInterface){
+                $batchChannels[] = $channel;
+            }
+        }
+
+        return $batchChannels;
+    }
+
 }
