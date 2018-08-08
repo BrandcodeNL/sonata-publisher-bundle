@@ -8,9 +8,11 @@
 
 {% block content %}
     <div class="sonata-ba-delete">
-        <div class="col-md-8">
-            <div class="box box-danger ">
-                <form action="#" method="POST">
+        <form action="{{ admin.generateUrl('batchPublishConfirmed')}}" method="POST">
+            <input type="hidden" name="_text_targetId" value="{{targetId}}">
+            <div class="col-md-8">
+                <div class="box box-danger ">
+                
                     <div class="box-header">   
                         <h4 class="box-title">{{'admin.channels.picker.title'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</h4>
                     </div>
@@ -50,21 +52,25 @@
                             {% endif %}
                     
                     </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-4 ">
-            <div class="box">
-                <div class="box-header">   
-                    <h4 class="box-title"></h4>
                 </div>
-                {% for channelKey, template in batchTemplates %}
-                <div data-channelKey="{{channelKey}}" class="batch-prepare-template" id="">
-                    {{template | raw}}
-                </div>
-                {% endfor %}
             </div>
-        </div>
+            <div class="col-md-4 ">
+                <div class="box">
+                    <div class="box-header">   
+                        <h4 class="box-title">{{'admin.channels.picker.batch_info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</h4>
+                    </div>
+                    <div class="box-body">                  
+                       
+                        {% for channelKey, template in batchTemplates %}
+                        <div data-channelKey="{{channelKey}}" class="batch-prepare-template" id="">
+                            {{template | raw}}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </form>
     </div>
  
 

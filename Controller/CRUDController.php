@@ -66,8 +66,7 @@ class CRUDController extends Controller
             array(
             'id' => explode(",", $request->get('_text_targetId'))
             )
-        );
-  
+        ); 
       
         
         if (!$targets) {
@@ -164,6 +163,72 @@ class CRUDController extends Controller
             )    
         );
        
+    }
+
+    /**
+     * Batch publish confirmed action
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function batchPublishConfirmedAction (Request $request = null)
+    {   
+        $modelManager = $this->admin->getModelManager();
+        $targets = $modelManager->findBy(        
+            $this->admin->getClass(),        
+            array(
+            'id' => explode(",", $request->get('_text_targetId'))
+            )
+        );
+
+        foreach($this->channelProvider->getChannels() as $key =>  $channel)
+        {
+            $locales = $request->get('locale');
+            if(is_array($locales) && count($locales) > 0)
+            {            
+                if(isset($request->get('channel')[$key]) && $request->get('channel')[$key] == "true")
+                { 
+                    //publish the objects in this channel for each locale
+                    foreach($locales as $locale => $value)
+                    {
+                        //make sure the objects are in the correct language                  
+                        foreach($targets as $target){
+                            $target = $this->translateObject($target, $locale);  
+                        }
+
+                        $result = $channel->publishBatch($targets);     
+                        if($result instanceof PublishResponce)
+                        {
+                            $result->setObjectId(null);
+                            $result->setLocale($locale);
+                            $result->setUser( (string) $this->tokenStorage->getToken()->getUser());
+                        
+                            $this->addFlash(
+                                $result->getStatus(),
+                                $this->trans('sonata_publish.'.$result->getStatus(),array(
+                                        '%locale%' => $locale, 
+                                        '%object%' => "batch", 
+                                        '%count%' => $result->getCount(), 
+                                        '%message%' => json_encode($result->getResultData()), 
+                                        '%channel%' => $this->trans($result->getChannel(), array(), 'messages')
+                                ),
+                                'BrandcodeNLSonataPublisherBundle'
+                                )
+                            );                  
+                    
+                            $this->get('doctrine')->getEntityManager()->persist($result);                  
+                        } 
+                    }
+
+                }
+            }
+    
+        }
+        
+        $this->get('doctrine')->getEntityManager()->flush();       
+       
+        return new RedirectResponse($this->admin->generateUrl('list'));
+
     }
 
     private function translateObject($object, $locale)
