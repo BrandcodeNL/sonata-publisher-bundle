@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use BrandcodeNL\SonataPublisherBundle\Entity\PublishResponce;
 use BrandcodeNL\SonataPublisherBundle\Channel\ChannelProvider;
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -31,9 +32,9 @@ class CRUDController extends Controller
      */
     public function publishAction($id)
     {
-        
+      
         $object = $this->admin->getSubject();
-        
+      
         if (!$object) {
             throw new NotFoundHttpException(sprintf('unable to find the object with id: %s', $id));
         }
@@ -60,17 +61,11 @@ class CRUDController extends Controller
      */
     public function publishConfirmedAction(Request $request)
     {
-        $modelManager = $this->admin->getModelManager();
-        $targets = $modelManager->findBy(        
-            $this->admin->getClass(),        
-            array(
-            'id' => explode(",", $request->get('_text_targetId'))
-            )
-        ); 
-      
         
-        if (!$targets) {
-            throw new NotFoundHttpException(sprintf('unable to find the objects',  $request->get('_text_targetId')));
+        $object = $this->admin->getSubject();
+      
+        if (!$object) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id: %s', $id));
         }
 
         foreach($this->channelProvider->getChannels() as $key =>  $channel)
@@ -78,7 +73,7 @@ class CRUDController extends Controller
             $locales = $request->get('locale');
             if(is_array($locales) && count($locales) > 0)
             {            
-                if($request->get('channel')[$key] == "true")
+                if( isset($request->get('channel')[$key]) && $request->get('channel')[$key] == "true")
                 { 
                     //publish this object in this channel for each locale
                     foreach($locales as $locale => $value)
@@ -88,7 +83,7 @@ class CRUDController extends Controller
                         $result = $channel->publish($object);     
                         if($result instanceof PublishResponce)
                         {
-                            $result->setObjectId($id);
+                            $result->setObjectId($object->getId());
                             $result->setLocale($locale);
                             $result->setUser( (string) $this->tokenStorage->getToken()->getUser());
                         
