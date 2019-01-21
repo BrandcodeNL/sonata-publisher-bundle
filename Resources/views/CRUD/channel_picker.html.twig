@@ -16,18 +16,18 @@
                         <h4 class="box-title">{{'admin.channels.picker.title'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</h4>
                     </div>
                     
-                    <div class="box-body">                               
-                        <p>{{'admin.channels.picker.lang.info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</p>        
-                        {% if admin.class is translatable %}
-                            
-                                {% for locale in sonata_translation_locales %}   
-                                    <div class="form-checkbox-container">                         
-                                        <input type="checkbox" id="locale_{{locale}}" name="locale[{{locale}}]" value="true">            
-                                        <label for="channel_{{locale}}">{{locale | trans}}</label>      
-                                    </div>
-                                {% endfor %}
-                    
-                        {% endif %}
+                    <div class="box-body">
+                        {#<p>{{'admin.channels.picker.lang.info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</p>#}
+                        {#{% if admin.class is translatable %}#}
+
+                                {#{% for locale in sonata_translation_locales %}#}
+                                    {#<div class="form-checkbox-container">#}
+                                        <input type="hidden" id="locale_nl" name="locale[nl]" value="true">
+                                        {#<label for="channel_{{locale}}">{{locale}}</label>#}
+                                    {#</div>#}
+                                {#{% endfor %}#}
+
+                        {#{% endif %}#}
                         <p>{{'admin.channels.picker.info'|trans({}, 'BrandcodeNLSonataPublisherBundle')}}</p>                    
                         {% for channel in channels %}       
                             <div class="form-checkbox-container">                           
