@@ -38,7 +38,7 @@ class CRUDController extends Controller
         if (!$object) {
             throw new NotFoundHttpException(sprintf('unable to find the object with id: %s', $id));
         }
-        $history = $this->get('doctrine')->getEntityManager()->getRepository(PublishResponce::class)->findBy(
+        $history = $this->get('doctrine.orm.entity_manager')->getRepository(PublishResponce::class)->findBy(
             array('objectId' => $id),
             array('id' => 'DESC')
         );
