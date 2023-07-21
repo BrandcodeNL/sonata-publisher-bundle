@@ -38,7 +38,7 @@ class CRUDController extends Controller
         if (!$object) {
             throw new NotFoundHttpException(sprintf('unable to find the object with id: %s', $id));
         }
-        $history = $this->get('doctrine')->getEntityManager()->getRepository(PublishResponce::class)->findBy(
+        $history = $this->get('doctrine.orm.entity_manager')->getRepository(PublishResponce::class)->findBy(
             array('objectId' => $id),
             array('id' => 'DESC')
         );
@@ -100,7 +100,7 @@ class CRUDController extends Controller
                                 )
                             );                  
                     
-                            $this->get('doctrine')->getEntityManager()->persist($result);                  
+                            $this->get('doctrine.orm.entity_manager')->persist($result);                  
                         } 
                     }
 
@@ -109,7 +109,7 @@ class CRUDController extends Controller
     
         }
         
-        $this->get('doctrine')->getEntityManager()->flush();       
+        $this->get('doctrine.orm.entity_manager')->flush();       
        
         return new RedirectResponse($this->admin->generateUrl('list'));
     }
@@ -211,7 +211,7 @@ class CRUDController extends Controller
                                 )
                             );                  
                     
-                            $this->get('doctrine')->getEntityManager()->persist($result);                  
+                            $this->get('doctrine.orm.entity_manager')->persist($result);                  
                         } 
                     }
 
@@ -220,7 +220,7 @@ class CRUDController extends Controller
     
         }
         
-        $this->get('doctrine')->getEntityManager()->flush();       
+        $this->get('doctrine.orm.entity_manager')->flush();       
        
         return new RedirectResponse($this->admin->generateUrl('list'));
 
@@ -232,7 +232,7 @@ class CRUDController extends Controller
         if($object->getLocale() != $locale)
         {
             $object->setLocale($locale);
-            $this->get('doctrine')->getEntityManager()->refresh($object);
+            $this->get('doctrine.orm.entity_manager')->refresh($object);
         }
         
         return $object;
